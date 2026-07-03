@@ -9,69 +9,80 @@ const Navbar = () => {
   const { cart } = useCartStore();
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-pink-100 bg-opacity-95 backdrop-blur-md shadow-lg z-50 border-b border-pink-300 transition-all duration-300">
-      <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
-        <div className="flex flex-wrap justify-between items-center">
+    <header className="fixed top-0 left-0 w-full bg-background/90 backdrop-blur-xl border-b border-border shadow-soft z-50 transition-all duration-300">
+      <div className="max-w-content mx-auto px-6 lg:px-8 py-5">
+        <div className="flex justify-between items-center">
           <Link
-            to="/"
-            className="text-2xl sm:text-3xl font-extrabold text-rose-800 flex items-center space-x-2 sm:space-x-3"
-          >
-            Dreamland
-          </Link>
+  to="/"
+  className="flex flex-col leading-none"
+>
+  <span className="font-heading text-2xl tracking-[0.25em] text-primary">
+    ✦ DREAMLAND
+  </span>
 
-          <nav className="flex flex-nowrap items-center gap-1 sm:gap-6 text-sm sm:text-lg">
-            <Link
-              to="/"
-              className="text-rose-900 hover:text-pink-600 font-medium transition duration-300 ease-in-out whitespace-nowrap px-2 py-1 sm:px-0 sm:py-0"
-            >
-              Etusivu
-            </Link>
+  <span className="font-body text-[11px] uppercase tracking-[0.35em] text-secondary mt-1">
+    Soft Future Jewelry
+  </span>
+</Link>
 
-            <Link
-              to="/cart"
-              className="relative group flex items-center text-rose-900 hover:text-pink-600 font-medium transition duration-300 ease-in-out whitespace-nowrap px-2 py-1 sm:px-0 sm:py-0"
-            >
-              <ShoppingCart className="inline-block mr-1 sm:mr-2 group-hover:text-pink-600" size={18} />
-              <span>Ostoskori</span>
-              {cart.length > 0 && (
-                <span className="absolute -top-2 -left-2 bg-rose-500 text-white rounded-full px-2 py-0.5 text-xs font-semibold group-hover:bg-rose-400 transition duration-300 ease-in-out">
-                  {cart.length}
-                </span>
-              )}
-            </Link>
+          <nav className="flex items-center gap-4">
+          <Link
+  to="/"
+  className="font-body text-secondary hover:text-primary transition-all duration-300 whitespace-nowrap px-3 py-2 rounded-full"
+>
+  Etusivu
+</Link>
 
-            {isAdmin && (
-              <Link
-                to="/secret-dashboard"
-                className="bg-rose-600 hover:bg-rose-500 text-white px-2 py-1 sm:px-4 sm:py-2 rounded-lg font-semibold flex items-center gap-1 sm:gap-2 transition duration-300 ease-in-out whitespace-nowrap text-sm sm:text-base"
-              >
-                <Lock size={16} className="sm:mr-1" />
-                Dashboard
-              </Link>
-            )}
+         <Link
+  to="/cart"
+  className="relative group flex items-center gap-2 font-body text-secondary hover:text-primary transition-all duration-300 whitespace-nowrap px-3 py-2 rounded-full"
+>
+  <ShoppingCart
+  className="transition-all duration-300 group-hover:text-primary group-hover:scale-105"
+  size={18}
+/>
+
+  <span>Ostoskori</span>
+
+  {cart.length > 0 && (
+    <span className="absolute -top-1 -right-1 bg-accent text-primary rounded-full  w-5 h-5 flex items-center justify-center text-xs font-semibold shadow-soft">
+      {cart.length}
+    </span>
+  )}
+</Link>
+{isAdmin && (
+  <Link
+    to="/secret-dashboard"
+    className="bg-primary hover:bg-accentHover text-white font-body px-4 py-2 rounded-2xl flex items-center gap-2 transition-all duration-300 whitespace-nowrap shadow-soft"
+  >
+    <Lock size={16} />
+    Dashboard
+  </Link>
+)}
+            
 
             {user ? (
               <button
                 onClick={logout}
-                className="bg-rose-600 hover:bg-rose-500 text-white px-2 py-1 sm:px-4 sm:py-2 rounded-lg font-semibold flex items-center gap-1 sm:gap-2 transition duration-300 ease-in-out whitespace-nowrap text-sm sm:text-base"
+                className="bg-primary hover:bg-accentHover text-white font-body px-4 py-2 rounded-2xl flex items-center gap-2 transition-all duration-300 whitespace-nowrap shadow-soft"
               >
-                <LogOut size={16} className="sm:mr-1" />
+                <LogOut size={16} />
                 Kirjaudu ulos
               </button>
             ) : (
               <>
                 <Link
                   to="/signup"
-                  className="bg-pink-500 hover:bg-pink-400 text-white px-2 py-1 sm:px-4 sm:py-2 rounded-lg font-semibold flex items-center gap-1 sm:gap-2 transition duration-300 ease-in-out whitespace-nowrap text-sm sm:text-base"
+                  className="bg-accent hover:bg-accentHover text-primary font-body px-4 py-2 rounded-2xl flex items-center gap-2 transition-all duration-300 whitespace-nowrap shadow-soft"
                 >
-                  <UserPlus size={16} className="sm:mr-1" />
+                  <UserPlus size={16} />
                   Rekisteröidy
                 </Link>
                 <Link
                   to="/login"
-                  className="bg-pink-700 hover:bg-pink-600 text-white px-2 py-1 sm:px-4 sm:py-2 rounded-lg font-semibold flex items-center gap-1 sm:gap-2 transition duration-300 ease-in-out whitespace-nowrap text-sm sm:text-base"
+                  className="bg-primary hover:bg-accentHover text-white font-body px-4 py-2 rounded-2xl flex items-center gap-2 transition-all duration-300 whitespace-nowrap shadow-soft"
                 >
-                  <LogIn size={16} className="sm:mr-1" />
+                  <LogIn size={16} />
                   Kirjaudu
                 </Link>
               </>
