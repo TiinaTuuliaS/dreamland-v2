@@ -1,6 +1,6 @@
 
 
-# Dreamland - Verkkokauppa - Näyttötyö
+# Dreamland V2
 
 Dreamland on yksinkertainen verkkokauppasovellus, joka on suunnattu noin 25–40-vuotiaille kuluttajille jotka ovat kinnostuneita trendikkäistä koruista.  Sovelluksessa käyttäjä voi luoda tilin, kirjautua sisään, 
 selata tuotteita kategorioittain ja lisätä niitä ostoskoriin ja viedä ostotapahtuman loppuun.  
