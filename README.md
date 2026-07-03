@@ -118,5 +118,10 @@ npm run dev
 cd frontend
 npm run dev
 
+## Julkaistun verkkokaupan v1
+
+https://verkkokauppa-projekti.onrender.com/
+
+
 
 
