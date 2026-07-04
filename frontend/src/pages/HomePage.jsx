@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import CategoryItem from "../components/CategoryItem";
 import FeaturedProducts from "../components/FeaturedProducts";
 import { useProductStore } from "../stores/useProductStore";
+import Hero from "../components/Hero";
 
 const categories = [
   { href: "/korvakorut", name: "Korvakorut", imageUrl: "/korvakoru1.jpg" },
@@ -22,43 +23,50 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-pink-50 to-pink-100 text-rose-900 overflow-hidden">
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <motion.h1
-          className="text-center text-5xl sm:text-6xl font-bold text-rose-800 mb-4 drop-shadow-lg"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          Tuotteet
-        </motion.h1>
+<div className="relative min-h-screen bg-background text-primary overflow-hidden">
 
-        <motion.p
-          className="text-center text-xl text-rose-700 mb-12"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          Viimeisimmät koruihastuksesi!
-        </motion.p>
+  {/* Blurit */}
+  <div className="absolute top-20 left-20 w-96 h-96 bg-accent/20 rounded-full blur-[120px]" />
 
-        {/* Kategoriat */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {categories.map((category, index) => (
-            <CategoryItem category={category} key={category.name} index={index} />
-          ))}
-        </div>
+  <div className="absolute bottom-10 right-20 w-80 h-80 bg-ice/40 rounded-full blur-[120px]" />
 
-        {/* Featured Products */}
-        {featuredProducts?.length > 0 && (
-          <FeaturedProducts featuredProducts={featuredProducts} />
-        )}
-        {loading && <p className="text-center text-lg text-gray-500">Ladataan tuotteita...</p>}
-        {!loading && featuredProducts?.length === 0 && (
-          <p className="text-center text-lg text-gray-500">Ei suosikkituotteita tällä hetkellä.</p>
-        )}
-      </div>
+  {/* Hero */}
+  <Hero />
+
+  {/* Muu sisältö */}
+  <div className="relative z-10 max-w-content mx-auto px-6 lg:px-8 pt-12 lg:pt-8 pb-24">
+
+    {/* Kategoriat */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+      {categories.map((category, index) => (
+        <CategoryItem
+          category={category}
+          key={category.name}
+          index={index}
+        />
+      ))}
     </div>
+
+    {/* Featured Products */}
+    {featuredProducts?.length > 0 && (
+      <FeaturedProducts featuredProducts={featuredProducts} />
+    )}
+
+    {loading && (
+      <p className="text-center text-lg text-gray-500">
+        Ladataan tuotteita...
+      </p>
+    )}
+
+    {!loading && featuredProducts?.length === 0 && (
+      <p className="text-center text-lg text-gray-500">
+        Ei suosikkituotteita tällä hetkellä.
+      </p>
+    )}
+
+  </div>
+
+</div>
   );
 };
 
