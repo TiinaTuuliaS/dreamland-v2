@@ -6,12 +6,38 @@ import { useProductStore } from "../stores/useProductStore";
 import Hero from "../components/Hero";
 
 const categories = [
-  { href: "/korvakorut", name: "Korvakorut", imageUrl: "/korvakoru1.jpg" },
-  { href: "/sormukset", name: "Sormukset", imageUrl: "/sormus1.jpg" },
-  { href: "/aurinkolasit", name: "Aurinkolasit", imageUrl: "/lasit.jpeg" },
-  { href: "/korusetit", name: "Korusetit", imageUrl: "/setti1.jpeg" },
-  { href: "/rannekorut", name: "Rannekorut", imageUrl: "/rannekoru1.jpg" },
-  { href: "/kaulakorut", name: "Kaulakorut", imageUrl: "/kaulakoru1.jpg" },
+  {
+    href: "/korvakorut",
+    name: "korvakorut",
+    imageUrl: "/images/category/korvakorutv4.png",
+  },
+    {
+    href: "/aurinkolasit",
+    name: "aurinkolasit",
+    imageUrl: "/images/category/aurinkolasitv2.png",
+  },
+  {
+    href: "/sormukset",
+    name: "sormukset",
+    imageUrl: "/images/category/sormuksetv3.png",
+  },
+
+  {
+    href: "/korusetit",
+    name: "korusetit",
+    imageUrl: "/images/category/korusetitv2.png",
+  },
+  {
+    href: "/kaulakorut",
+    name: "kaulakorut",
+    imageUrl: "/images/category/kaulakorutv2.png",
+  },
+  {
+    href: "/rannekorut",
+    name: "rannekorut",
+    imageUrl: "/images/category/rannekorutv3.png",
+  },
+  
 ];
 
 
@@ -34,7 +60,7 @@ const HomePage = () => {
   <Hero />
 
   {/* Muu sisältö */}
-  <div className="relative z-10 max-w-content mx-auto px-6 lg:px-8 pt-12 lg:pt-8 pb-24">
+ <div className="relative z-10 w-[96%] max-w-[1600px] mx-auto pt-12 lg:pt-8 pb-24">
 
     {/* Kategoriat */}
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
