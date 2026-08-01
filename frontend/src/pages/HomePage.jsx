@@ -59,21 +59,7 @@ const HomePage = () => {
   {/* Hero */}
   <Hero />
 
-  {/* Muu sisältö */}
- <div className="relative z-10 w-[96%] max-w-[1600px] mx-auto pt-12 lg:pt-8 pb-24">
-
-    {/* Kategoriat */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-      {categories.map((category, index) => (
-        <CategoryItem
-          category={category}
-          key={category.name}
-          index={index}
-        />
-      ))}
-    </div>
-
-    {/* Featured Products */}
+      {/* Featured Products */}
     {featuredProducts?.length > 0 && (
       <FeaturedProducts featuredProducts={featuredProducts} />
     )}
@@ -89,6 +75,33 @@ const HomePage = () => {
         Ei suosikkituotteita tällä hetkellä.
       </p>
     )}
+
+  {/* Muu sisältö */}
+
+  <div className="text-center mt-24 mb-12">
+  <p className="uppercase tracking-[0.35em] text-secondary text-xs mb-3">
+    Browse Collection
+  </p>
+
+  <h2 className="font-heading text-4xl lg:text-5xl text-primary">
+    Shop by Category
+  </h2>
+</div>
+
+ <div className="relative z-10 w-[96%] max-w-[1600px] mx-auto pt-12 lg:pt-8 pb-24">
+
+    {/* Kategoriat */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+      {categories.map((category, index) => (
+        <CategoryItem
+          category={category}
+          key={category.name}
+          index={index}
+        />
+      ))}
+    </div>
+
+
 
   </div>
 

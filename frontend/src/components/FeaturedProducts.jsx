@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
-import { ShoppingCart, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ShoppingCart,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { useCartStore } from "../stores/useCartStore";
 
 const FeaturedProducts = ({ featuredProducts }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(4);
+
   const { addToCart } = useCartStore();
 
   useEffect(() => {
@@ -16,96 +21,209 @@ const FeaturedProducts = ({ featuredProducts }) => {
     };
 
     handleResize();
+
     window.addEventListener("resize", handleResize);
+
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const nextSlide = () => setCurrentIndex((prev) => prev + 1);
-  const prevSlide = () => setCurrentIndex((prev) => prev - 1);
+  const nextSlide = () => {
+    if (currentIndex >= featuredProducts.length - itemsPerPage) {
+      setCurrentIndex(0);
+    } else {
+      setCurrentIndex(currentIndex + 1);
+    }
+  };
 
-  const isStartDisabled = currentIndex === 0;
-  const isEndDisabled = currentIndex >= featuredProducts.length - itemsPerPage;
+  const prevSlide = () => {
+    if (currentIndex === 0) {
+      setCurrentIndex(featuredProducts.length - itemsPerPage);
+    } else {
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
 
-  if (!featuredProducts || featuredProducts.length === 0) {
-    return (
-      <div className="text-center py-12 text-gray-500">
-        Ei suosikkituotteita tällä hetkellä.
-      </div>
-    );
-  }
+  if (!featuredProducts || featuredProducts.length === 0) return null;
 
   return (
-    <div className="py-12">
-      <div className="container mx-auto px-4">
-        <h2 className="text-center text-5xl sm:text-6xl font-bold text-rose-700 mb-8 drop-shadow-md">
-          Esittelyssä
+    <section className="pt-10 pb-20">
+
+      <div className="text-center mb-12">
+
+        <p className="uppercase tracking-[0.35em] text-secondary text-xs mb-4">
+          Handpicked Favorites
+        </p>
+
+        <h2 className="font-heading text-4xl lg:text-5xl text-primary">
+          ✦ Dreamland Picks
         </h2>
-        <div className="relative">
-          <div className="overflow-hidden">
-            <div
-              className="flex transition-transform duration-300 ease-in-out"
-              style={{ transform: `translateX(-${currentIndex * (100 / itemsPerPage)}%)` }}
-            >
-              {featuredProducts.map((product) => (
+
+      </div>
+
+      <div className="relative">
+
+        <button
+          onClick={prevSlide}
+          className="
+            absolute
+            left-0
+            top-1/2
+            -translate-y-1/2
+            z-20
+            hidden
+            md:flex
+            w-12
+            h-12
+            rounded-full
+            bg-surface
+            border
+            border-border
+            shadow-soft
+            items-center
+            justify-center
+            transition-all
+            duration-300
+            hover:bg-accent
+            hover:text-white
+          "
+        >
+          <ChevronLeft size={22} />
+        </button>
+
+        <button
+          onClick={nextSlide}
+          className="
+            absolute
+            right-0
+            top-1/2
+            -translate-y-1/2
+            z-20
+            hidden
+            md:flex
+            w-12
+            h-12
+            rounded-full
+            bg-surface
+            border
+            border-border
+            shadow-soft
+            items-center
+            justify-center
+            transition-all
+            duration-300
+            hover:bg-accent
+            hover:text-white
+          "
+        >
+          <ChevronRight size={22} />
+        </button>
+
+        <div className="overflow-hidden">
+
+          <div
+            className="flex transition-transform duration-500 ease-out"
+            style={{
+              transform: `translateX(-${
+                currentIndex * (100 / itemsPerPage)
+              }%)`,
+            }}
+          >
+            {featuredProducts.map((product) => (
+
+              <div
+                key={product._id}
+                className="flex-shrink-0 px-3"
+                style={{
+                  flexBasis: `${100 / itemsPerPage}%`,
+                }}
+              >
+
                 <div
-                  key={product._id}
-                  className="flex-shrink-0 px-2"
-                  style={{ flexBasis: `${100 / itemsPerPage}%` }}
+                  className="
+                    bg-surface
+                    rounded-[28px]
+                    border
+                    border-border
+                    shadow-soft
+                    overflow-hidden
+                    transition-all
+                    duration-300
+                    hover:-translate-y-2
+                    hover:shadow-xl
+                    h-full
+                  "
                 >
-                  <div className="bg-white/80 backdrop-blur-md rounded-xl shadow-md overflow-hidden h-full transition-all duration-300 hover:shadow-xl border border-rose-300">
-                    <div className="overflow-hidden">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-48 object-cover transition-transform duration-300 ease-in-out hover:scale-105"
-                      />
-                    </div>
-                    <div className="p-4">
-                      <h3 className="text-lg font-semibold mb-2 text-rose-800">{product.name}</h3>
-                      <p className="text-rose-600 font-medium mb-4">
-                        {product.price.toFixed(2)} €
-                      </p>
-                      <button
-                        onClick={() => addToCart(product)}
-                        className="w-full bg-rose-600 hover:bg-rose-500 text-white font-semibold py-2 px-4 rounded transition-colors duration-300 flex items-center justify-center"
-                      >
-                        <ShoppingCart className="w-5 h-5 mr-2" />
-                        Lisää ostoskoriin
-                      </button>
-                    </div>
+
+                  <div className="overflow-hidden bg-accent/5">
+
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="
+                        w-full
+                        aspect-square
+                        object-contain
+                        p-8
+                        transition-transform
+                        duration-500
+                        hover:scale-105
+                      "
+                    />
+
                   </div>
+
+                  <div className="p-6">
+
+                    <h3 className="font-heading text-2xl text-primary mb-2">
+                      {product.name}
+                    </h3>
+
+                    <p className="text-secondary mb-6">
+                      € {product.price.toFixed(2)}
+                    </p>
+
+                                        <button
+                      onClick={() => addToCart(product)}
+                      className="
+                        w-full
+                        rounded-2xl
+                        bg-primary
+                        text-white
+                        py-3.5
+                        font-body
+                        flex
+                        items-center
+                        justify-center
+                        gap-2
+                        transition-all
+                        duration-300
+                        hover:bg-accent-hover
+                        hover:shadow-lg
+                        hover:-translate-y-0.5
+                        active:translate-y-0
+                      "
+                    >
+                      <ShoppingCart size={18} />
+                      Add to Cart
+                    </button>
+
+                  </div>
+
                 </div>
-              ))}
-            </div>
+
+              </div>
+
+            ))}
           </div>
 
-          <button
-            onClick={prevSlide}
-            disabled={isStartDisabled}
-            className={`absolute top-1/2 -left-4 transform -translate-y-1/2 p-2 rounded-full transition-colors duration-300 ${
-              isStartDisabled
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-rose-600 hover:bg-rose-500"
-            }`}
-          >
-            <ChevronLeft className="w-6 h-6 text-white" />
-          </button>
-
-          <button
-            onClick={nextSlide}
-            disabled={isEndDisabled}
-            className={`absolute top-1/2 -right-4 transform -translate-y-1/2 p-2 rounded-full transition-colors duration-300 ${
-              isEndDisabled
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-rose-600 hover:bg-rose-500"
-            }`}
-          >
-            <ChevronRight className="w-6 h-6 text-white" />
-          </button>
         </div>
+
       </div>
-    </div>
+
+    </section>
   );
 };
 
 export default FeaturedProducts;
+
+
