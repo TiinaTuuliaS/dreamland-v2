@@ -1,93 +1,141 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useProductStore } from "../stores/useProductStore";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import ProductCard from "../components/ProductCard";
 import { ArrowLeft } from "lucide-react";
 
+const categoryDescriptions = {
+	korvakorut: "Delicate details that brighten every look.",
+	kaulakorut: "Elegant necklaces designed for everyday beauty.",
+	sormukset: "Timeless rings with a dreamy touch.",
+	rannekorut: "Light, feminine bracelets made to layer.",
+	aurinkolasit: "Soft Y2K vibes for sunny days.",
+	korusetit: "Perfectly matched pieces, ready to wear.",
+};
+
 const CategoryPage = () => {
-  const { fetchProductsByCategory, products } = useProductStore();
-  const { category } = useParams();
-  const navigate = useNavigate();
+	const { fetchProductsByCategory, products } = useProductStore();
 
-  const [lightboxImage, setLightboxImage] = useState(null);
+	const { category } = useParams();
+	const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchProductsByCategory(category);
-  }, [fetchProductsByCategory, category]);
+	useEffect(() => {
+		fetchProductsByCategory(category);
+	}, [fetchProductsByCategory, category]);
 
-  return (
-    <div className="min-h-screen bg-pink-100 bg-opacity-40">
-      <div className="relative max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pt-32">
-        {/* Otsikko */}
-        <motion.h1
-          className="text-center text-4xl sm:text-5xl font-bold text-rose-800 mb-6"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          {category.charAt(0).toUpperCase() + category.slice(1)}
-        </motion.h1>
+	const title =
+		category.charAt(0).toUpperCase() + category.slice(1);
 
-        {/* Leijuva nuoli-nappi */}
-        <div className="flex justify-center mb-10">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center justify-center w-14 h-14 bg-rose-600 text-white rounded-full shadow-xl hover:bg-rose-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-400"
-            onClick={() => navigate("/")}
-          >
-            <ArrowLeft className="h-7 w-7" />
-          </motion.button>
-        </div>
+	return (
+		<div className="relative min-h-screen bg-background overflow-hidden">
 
-        {/* Tuotekortit */}
-        <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-        >
-          {products?.length === 0 && (
-            <h2 className="text-3xl font-semibold text-rose-400 text-center col-span-full">
-              Ei vielä tuotteita
-            </h2>
-          )}
+			{/* Background blur */}
 
-          {products?.map((product) => (
-            <ProductCard
-              key={product._id}
-              product={product}
-              onImageClick={() => setLightboxImage(product.image)}
-            />
-          ))}
-        </motion.div>
-      </div>
+			<div className="absolute top-24 left-20 w-96 h-96 bg-accent/20 rounded-full blur-[120px]" />
 
-      {/* Lightbox / Suurennettu kuva */}
-      {lightboxImage && (
-        <motion.div
-          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 cursor-pointer"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={() => setLightboxImage(null)}
-        >
-          <motion.img
-            src={lightboxImage}
-            alt="Suurennettu tuotekuva"
-            className="max-h-[90vh] max-w-[90vw] rounded-lg shadow-lg"
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.3 }}
-          />
-        </motion.div>
-      )}
-    </div>
-  );
+			<div className="absolute bottom-0 right-10 w-80 h-80 bg-ice/40 rounded-full blur-[120px]" />
+
+			<div className="relative z-10 max-w-content mx-auto px-6 lg:px-8 pt-5 pb-24">
+
+				{/* Back button */}
+
+				<button
+					onClick={() => navigate("/")}
+					className="
+						inline-flex
+						items-center
+						gap-2
+						rounded-full
+						bg-surface
+						border
+						border-border
+						shadow-soft
+						px-5
+						py-3
+						text-secondary
+						transition-all
+						duration-300
+						hover:bg-accent
+						hover:text-white
+						mb-8
+					"
+				>
+					<ArrowLeft size={18} />
+					Back to Home
+				</button>
+
+				{/* Heading */}
+
+				<motion.div
+					initial={{ opacity: 0, y: -20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.6 }}
+					className="text-center mb-10"
+				>
+
+					<p className="uppercase tracking-[0.35em] text-secondary text-xs mb-4">
+						Discover our collection
+					</p>
+
+					<h1 className="font-heading text-5xl lg:text-6xl text-primary mb-5">
+						{title}
+					</h1>
+
+					<p className="max-w-xl mx-auto text-secondary leading-relaxed">
+						{categoryDescriptions[category]}
+					</p>
+
+				</motion.div>
+
+				{/* Products */}
+
+<motion.div
+	initial={{ opacity: 0, y: 20 }}
+	animate={{ opacity: 1, y: 0 }}
+	transition={{ duration: 0.6, delay: 0.2 }}
+	className="
+		grid
+		grid-cols-1
+		sm:grid-cols-2
+		lg:grid-cols-3
+		xl:grid-cols-4
+		gap-8
+	"
+>
+	{products?.length === 0 ? (
+		<div className="col-span-full py-24 text-center">
+
+			<h2 className="font-heading text-4xl text-primary mb-4">
+				Coming Soon
+			</h2>
+
+			<p className="text-secondary">
+				We're adding beautiful new pieces to this collection.
+			</p>
+
+		</div>
+	) : (
+		products.map((product) => (
+			<motion.div
+				key={product._id}
+				layout
+				initial={{ opacity: 0, y: 20 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.35 }}
+			>
+				<ProductCard product={product} />
+			</motion.div>
+		))
+	)}
+</motion.div>
+
+			</div>
+
+		</div>
+	);
 };
 
 export default CategoryPage;
-
 
 
