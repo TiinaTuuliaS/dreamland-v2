@@ -5,101 +5,200 @@ import { MoveRight } from "lucide-react";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "../lib/axios";
 
-//stripe public key maksuja varten ostoskoriin, sandbox eli testitilassa
-
+// Stripe public key – testitila
 const stripePromise = loadStripe(
-  "pk_test_51RNyRyBDQOWIa4uWLmhTsTPG7jUIU0Lj1A6F0zLMPOndrp8wNFVhQPkJwwKnEkyFobcxOO3LwLJitYgRFFY4aIDy000eHuouim"
+	"pk_test_51RNyRyBDQOWIa4uWLmhTsTPG7jUIU0Lj1A6F0zLMPOndrp8wNFVhQPkJwwKnEkyFobcxOO3LwLJitYgRFFY4aIDy000eHuouim"
 );
 
-//komponentti tilauksen yhteenvedolle ostoskorissa
-
 const OrderSummary = () => {
-  const { total, subtotal, coupon, isCouponApplied, cart } = useCartStore();
+	const {
+		total,
+		subtotal,
+		coupon,
+		isCouponApplied,
+		cart,
+	} = useCartStore();
 
-  const savings = subtotal - total;
-  const formattedSubtotal = subtotal.toFixed(2);
-  const formattedTotal = total.toFixed(2);
-  const formattedSavings = savings.toFixed(2);
-  
-  //funktio maksutapahtuman käsittelyä varten Stripessä
-  const handlePayment = async () => {
-    const stripe = await stripePromise; //stripen oman tilin public key otetaan käyttöön
-    //luodaan checkout session data, joka ottaa vastaan ostoskorin ja kuponkikoodin arraylla
-    const res = await axios.post("/payments/create-checkout-session", {
-      products: cart,
-      couponCode: coupon ? coupon.code : null,
-    });
+	const savings = subtotal - total;
 
-    //ostoskorinäkymä stripeen checkouttiin
-    const session = res.data;
-    const result = await stripe.redirectToCheckout({
-      sessionId: session.id, //session id koostuu backendissä paymencontrollerissa
-    });
+	const formattedSubtotal = subtotal.toFixed(2);
+	const formattedTotal = total.toFixed(2);
+	const formattedSavings = savings.toFixed(2);
 
-    if (result.error) {
-      console.error("Virhe maksutapahtumassa:", result.error);
-    }
-  };
+	const handlePayment = async () => {
+		try {
+			const stripe = await stripePromise;
 
-  return (
-    <motion.div
-      className="space-y-4 rounded-lg border border-pink-300 bg-white/80 p-4 shadow-lg sm:p-6"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <p className="text-xl font-semibold text-rose-800">Tilauksen yhteenveto</p>
+			const res = await axios.post(
+				"/payments/create-checkout-session",
+				{
+					products: cart,
+					couponCode: coupon ? coupon.code : null,
+				}
+			);
 
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <dl className="flex items-center justify-between gap-4">
-            <dt className="text-base font-normal text-pink-600">Alkuperäinen hinta</dt>
-            <dd className="text-base font-medium text-rose-800">€{formattedSubtotal}</dd>
-          </dl>
+			const session = res.data;
 
-          {savings > 0 && (
-            <dl className="flex items-center justify-between gap-4">
-              <dt className="text-base font-normal text-pink-600">Säästö</dt>
-              <dd className="text-base font-medium text-rose-600">-€{formattedSavings}</dd>
-            </dl>
-          )}
+			const result = await stripe.redirectToCheckout({
+				sessionId: session.id,
+			});
 
-          {coupon && isCouponApplied && (
-            <dl className="flex items-center justify-between gap-4">
-              <dt className="text-base font-normal text-pink-600">
-                Coupon ({coupon.code})
-              </dt>
-              <dd className="text-base font-medium text-rose-600">-{coupon.discountPercentage}%</dd>
-            </dl>
-          )}
-          <dl className="flex items-center justify-between gap-4 border-t border-pink-300 pt-2">
-            <dt className="text-base font-bold text-rose-800">Yhteensä</dt>
-            <dd className="text-base font-bold text-pink-600">€{formattedTotal}</dd>
-          </dl>
-        </div>
+			if (result.error) {
+				console.error(
+					"Virhe maksutapahtumassa:",
+					result.error
+				);
+			}
+		} catch (error) {
+			console.error(
+				"Checkout-istunnon luominen epäonnistui:",
+				error
+			);
+		}
+	};
 
-        <motion.button
-          className="flex w-full items-center justify-center rounded-lg bg-pink-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-pink-500 focus:outline-none focus:ring-4 focus:ring-pink-300"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handlePayment}
-        >
-          Kassalle
-        </motion.button>
+	return (
+		<motion.div
+			initial={{ opacity: 0, y: 20 }}
+			animate={{ opacity: 1, y: 0 }}
+			transition={{ duration: 0.5 }}
+			className="
+				rounded-[28px]
+				bg-surface
+				border
+				border-border
+				shadow-soft
+				p-6
+				sm:p-8
+			"
+		>
+			{/* Heading */}
 
-        <div className="flex items-center justify-center gap-2">
-          <span className="text-sm font-normal text-pink-400">tai</span>
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-sm font-medium text-pink-600 underline hover:text-pink-500 hover:no-underline"
-          >
-            Takaisin ostoksille
-            <MoveRight size={16} />
-          </Link>
-        </div>
-      </div>
-    </motion.div>
-  );
+			<div className="mb-8">
+				<p className="uppercase tracking-[0.3em] text-secondary text-xs mb-3">
+					Your order
+				</p>
+
+				<h2 className="font-heading text-3xl text-primary">
+					Tilauksen yhteenveto
+				</h2>
+			</div>
+
+			{/* Price details */}
+
+			<div className="space-y-4">
+
+				<div className="flex items-center justify-between gap-4">
+					<span className="text-sm text-secondary">
+						Alkuperäinen hinta
+					</span>
+
+					<span className="font-medium text-primary">
+						€ {formattedSubtotal}
+					</span>
+				</div>
+
+				{savings > 0 && (
+					<div className="flex items-center justify-between gap-4">
+						<span className="text-sm text-secondary">
+							Säästö
+						</span>
+
+						<span className="font-medium text-success">
+							-€ {formattedSavings}
+						</span>
+					</div>
+				)}
+
+				{coupon && isCouponApplied && (
+					<div className="flex items-center justify-between gap-4">
+						<span className="text-sm text-secondary">
+							Coupon ({coupon.code})
+						</span>
+
+						<span className="font-medium text-success">
+							-{coupon.discountPercentage}%
+						</span>
+					</div>
+				)}
+
+				{/* Total */}
+
+				<div className="
+					flex
+					items-center
+					justify-between
+					gap-4
+					border-t
+					border-border
+					pt-5
+					mt-5
+				">
+					<span className="font-heading text-xl text-primary">
+						Yhteensä
+					</span>
+
+					<span className="font-heading text-2xl text-primary">
+						€ {formattedTotal}
+					</span>
+				</div>
+
+			</div>
+
+			{/* Checkout */}
+
+			<motion.button
+				onClick={handlePayment}
+				whileHover={{ y: -2 }}
+				whileTap={{ scale: 0.98 }}
+				className="
+					mt-8
+					w-full
+					rounded-2xl
+					bg-primary
+					text-white
+					py-4
+					font-body
+					font-medium
+					flex
+					items-center
+					justify-center
+					transition-all
+					duration-300
+					hover:bg-accent-hover
+					hover:shadow-lg
+				"
+			>
+				Kassalle
+			</motion.button>
+
+			{/* Continue shopping */}
+
+			<div className="flex items-center justify-center gap-2 mt-5">
+				<span className="text-sm text-secondary">
+					tai
+				</span>
+
+				<Link
+					to="/"
+					className="
+						inline-flex
+						items-center
+						gap-1.5
+						text-sm
+						font-medium
+						text-primary
+						transition-colors
+						duration-200
+						hover:text-accent-hover
+					"
+				>
+					Takaisin ostoksille
+					<MoveRight size={16} />
+				</Link>
+			</div>
+		</motion.div>
+	);
 };
 
 export default OrderSummary;

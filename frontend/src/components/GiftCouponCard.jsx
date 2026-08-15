@@ -1,92 +1,242 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useCartStore } from "../stores/useCartStore";
+import { Tag } from "lucide-react";
 
 const GiftCouponCard = () => {
-  const [userInputCode, setUserInputCode] = useState("");
-  const { coupon, isCouponApplied, applyCoupon, getMyCoupon, removeCoupon } = useCartStore(); //haetaan cartstoressa luodut funktiot
+	const [userInputCode, setUserInputCode] = useState("");
 
-  //haetaan kuponki
-  useEffect(() => {
-    getMyCoupon();
-  }, [getMyCoupon]);
+	const {
+		coupon,
+		isCouponApplied,
+		applyCoupon,
+		getMyCoupon,
+		removeCoupon,
+	} = useCartStore();
 
-  useEffect(() => {
-    if (coupon) setUserInputCode(coupon.code);
-  }, [coupon]);
+	useEffect(() => {
+		getMyCoupon();
+	}, [getMyCoupon]);
 
-  const handleApplyCoupon = () => {
-    if (!userInputCode) return;
-    applyCoupon(userInputCode);
-  };
+	useEffect(() => {
+		if (coupon) {
+			setUserInputCode(coupon.code);
+		}
+	}, [coupon]);
 
-  const handleRemoveCoupon = async () => {
-    await removeCoupon();
-    setUserInputCode("");
-  };
+	const handleApplyCoupon = () => {
+		if (!userInputCode) return;
+		applyCoupon(userInputCode);
+	};
 
-  return (
-    <motion.div
-      className="space-y-4 rounded-lg border border-pink-300 bg-white/80 p-4 shadow-lg sm:p-6"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.2 }}
-    >
-      <div className="space-y-4">
-        <div>
-          <label htmlFor="voucher" className="mb-2 block text-sm font-medium text-rose-800">
-            Onko sinulla kuponki tai lahjakortti?
-          </label>
-          <input
-            type="text"
-            id="voucher"
-            className="block w-full rounded-lg border border-pink-300 bg-white p-2.5 text-sm text-rose-900 placeholder-pink-400 focus:border-pink-500 focus:ring-pink-500"
-            placeholder="lisää koodi tähän"
-            value={userInputCode}
-            onChange={(e) => setUserInputCode(e.target.value)}
-            required
-          />
-        </div>
+	const handleRemoveCoupon = async () => {
+		await removeCoupon();
+		setUserInputCode("");
+	};
 
-        <motion.button
-          type="button"
-          className="flex w-full items-center justify-center rounded-lg bg-pink-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-pink-500 focus:outline-none focus:ring-4 focus:ring-pink-300"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handleApplyCoupon}
-        >
-          Lisää koodi
-        </motion.button>
-      </div>
+	return (
+		<motion.div
+			initial={{ opacity: 0, y: 20 }}
+			animate={{ opacity: 1, y: 0 }}
+			transition={{ duration: 0.5, delay: 0.2 }}
+			className="
+				rounded-[28px]
+				bg-surface
+				border
+				border-border
+				shadow-soft
+				p-6
+				sm:p-8
+			"
+		>
+			{/* Heading */}
 
-      {isCouponApplied && coupon && (
-        <div className="mt-4">
-          <h3 className="text-lg font-medium text-rose-800">Kuponki tallennettu</h3>
-          <p className="mt-2 text-sm text-pink-600">
-            {coupon.code} - {coupon.discountPercentage}% alennusta
-          </p>
-          <motion.button
-            type="button"
-            className="mt-2 flex w-full items-center justify-center rounded-lg bg-red-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleRemoveCoupon}
-          >
-            Poista kuponki
-          </motion.button>
-        </div>
-      )}
+			<div className="flex items-center gap-3 mb-6">
 
-      {coupon && !isCouponApplied && (
-        <div className="mt-4">
-          <h3 className="text-lg font-medium text-rose-800">Saatavilla oleva kuponki:</h3>
-          <p className="mt-2 text-sm text-pink-600">
-            {coupon.code} - {coupon.discountPercentage}% off
-          </p>
-        </div>
-      )}
-    </motion.div>
-  );
+				<div className="
+					flex
+					h-10
+					w-10
+					shrink-0
+					items-center
+					justify-center
+					rounded-full
+					bg-lavender/30
+				">
+					<Tag size={18} className="text-primary" />
+				</div>
+
+				<div>
+					<p className="uppercase tracking-[0.25em] text-secondary text-[10px] mb-1">
+						Dreamland extra
+					</p>
+
+					<h2 className="font-heading text-2xl text-primary">
+						Kuponki tai lahjakortti
+					</h2>
+				</div>
+
+			</div>
+
+			{/* Coupon input */}
+
+			<div className="space-y-4">
+
+				<label
+					htmlFor="voucher"
+					className="block text-sm text-secondary"
+				>
+					Onko sinulla kuponkikoodi tai lahjakortti?
+				</label>
+
+				<div className="flex flex-col sm:flex-row gap-3">
+
+					<input
+						type="text"
+						id="voucher"
+						placeholder="Lisää koodi tähän"
+						value={userInputCode}
+						onChange={(e) =>
+							setUserInputCode(e.target.value)
+						}
+						className="
+							flex-1
+							rounded-2xl
+							border
+							border-border
+							bg-background
+							px-4
+							py-3
+							text-sm
+							text-primary
+							outline-none
+							transition-all
+							duration-300
+							placeholder:text-secondary/60
+							focus:border-accent
+							focus:ring-2
+							focus:ring-accent/20
+						"
+					/>
+
+					<motion.button
+						type="button"
+						onClick={handleApplyCoupon}
+						whileHover={{ y: -1 }}
+						whileTap={{ scale: 0.98 }}
+						className="
+							rounded-2xl
+							bg-primary
+							px-6
+							py-3
+							font-body
+							text-sm
+							font-medium
+							text-white
+							transition-all
+							duration-300
+							hover:bg-accent-hover
+							hover:shadow-lg
+						"
+					>
+						Lisää koodi
+					</motion.button>
+
+				</div>
+
+			</div>
+
+			{/* Applied coupon */}
+
+			{isCouponApplied && coupon && (
+				<div className="
+					mt-6
+					rounded-2xl
+					border
+					border-border
+					bg-lavender/10
+					p-5
+				">
+
+					<div className="flex items-start justify-between gap-4">
+
+						<div>
+							<p className="text-sm font-medium text-primary">
+								Kuponki käytössä
+							</p>
+
+							<p className="mt-1 text-sm text-secondary">
+								{coupon.code} · {coupon.discountPercentage}% alennusta
+							</p>
+						</div>
+
+						<span className="
+							rounded-full
+							bg-lavender/30
+							px-3
+							py-1
+							text-xs
+							font-medium
+							text-primary
+						">
+							-{coupon.discountPercentage}%
+						</span>
+
+					</div>
+
+					<motion.button
+						type="button"
+						onClick={handleRemoveCoupon}
+						whileHover={{ y: -1 }}
+						whileTap={{ scale: 0.98 }}
+						className="
+							mt-4
+							w-full
+							rounded-2xl
+							border
+							border-border
+							bg-surface
+							py-3
+							text-sm
+							font-medium
+							text-secondary
+							transition-all
+							duration-300
+							hover:border-danger
+							hover:text-danger
+						"
+					>
+						Poista kuponki
+					</motion.button>
+
+				</div>
+			)}
+
+			{/* Available coupon */}
+
+			{coupon && !isCouponApplied && (
+				<div className="
+					mt-6
+					rounded-2xl
+					bg-background
+					border
+					border-border
+					p-5
+				">
+
+					<p className="text-sm font-medium text-primary">
+						Saatavilla oleva kuponki
+					</p>
+
+					<p className="mt-2 text-sm text-secondary">
+						{coupon.code} · {coupon.discountPercentage}% alennusta
+					</p>
+
+				</div>
+			)}
+
+		</motion.div>
+	);
 };
 
 export default GiftCouponCard;

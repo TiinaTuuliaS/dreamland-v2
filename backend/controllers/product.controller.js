@@ -75,6 +75,82 @@ export const createProduct = async (req, res) => {
   }
 };
 
+// Tuotteen muokkaaminen
+export const updateProduct = async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+
+        if (!product) {
+            return res.status(404).json({
+                message: "Tuotetta ei löytynyt",
+            });
+        }
+
+        const {
+            name,
+            description,
+            price,
+            category,
+            image,
+        } = req.body;
+
+        // Päivitetään perustiedot
+        product.name = name;
+        product.description = description;
+        product.price = price;
+        product.category = category;
+
+        // Jos uusi kuva on lähetetty
+        if (image && image !== product.image) {
+            let cloudinaryResponse = null;
+
+            cloudinaryResponse = await cloudinary.uploader.upload(
+                image,
+                { folder: "products" }
+            );
+
+            // Poistetaan vanha kuva Cloudinarystä
+            if (product.image) {
+                const publicId = product.image
+                    .split("/")
+                    .pop()
+                    .split(".")[0];
+
+                try {
+                    await cloudinary.uploader.destroy(
+                        `products/${publicId}`
+                    );
+                } catch (error) {
+                    console.log(
+                        "Vanhan kuvan poistaminen epäonnistui:",
+                        error.message
+                    );
+                }
+            }
+
+            product.image = cloudinaryResponse.secure_url;
+        }
+
+        const updatedProduct = await product.save();
+
+        // Päivitetään featured-tuotteiden cache
+        await updateFeaturedProductsCache();
+
+        res.json(updatedProduct);
+
+    } catch (error) {
+        console.log(
+            "Virhe tuotteen päivityksessä:",
+            error.message
+        );
+
+        res.status(500).json({
+            message: "Serveri ei vastaa",
+            error: error.message,
+        });
+    }
+};
+
 //Tuotteen poistamisen funktio ja kuvan poistaminen Cloudinarysta
 
 export const deleteProduct = async (req, res) => {

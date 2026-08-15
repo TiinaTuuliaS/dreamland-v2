@@ -6,94 +6,239 @@ import axios from "../lib/axios";
 import Confetti from "react-confetti";
 
 const PurchaseSuccessPage = () => {
-  const [isProcessing, setIsProcessing] = useState(true);
-  const { clearCart } = useCartStore();
-  const [error, setError] = useState(null);
+	const [isProcessing, setIsProcessing] = useState(true);
+	const [error, setError] = useState(null);
 
-  //funktio joka käsittelee onnistuneen tilauksen axiospyynnön 
+	const { clearCart } = useCartStore();
 
-  useEffect(() => {
-    const handleCheckoutSuccess = async (sessionId) => {
-      try {
-        await axios.post("/payments/checkout-success", { sessionId });
-        clearCart();
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsProcessing(false);
-      }
-    };
+	useEffect(() => {
+		const handleCheckoutSuccess = async (sessionId) => {
+			try {
+				await axios.post("/payments/checkout-success", {
+					sessionId,
+				});
 
-    const sessionId = new URLSearchParams(window.location.search).get("session_id");
-    if (sessionId) {
-      handleCheckoutSuccess(sessionId);
-    } else {
-      setIsProcessing(false);
-      setError("Session id:tä ei löydy");
-    }
-  }, [clearCart]);
+				clearCart();
+			} catch (error) {
+				console.log(error);
+			} finally {
+				setIsProcessing(false);
+			}
+		};
 
-  if (isProcessing) return "Käsitellään...";
-  if (error) return `Virhe: ${error}`;
+		const sessionId = new URLSearchParams(
+			window.location.search
+		).get("session_id");
 
-  return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-pink-100 bg-opacity-40">
-      <Confetti
-        width={window.innerWidth}
-        height={window.innerHeight}
-        gravity={0.2}
-        style={{ zIndex: 99 }}
-        numberOfPieces={740}
-        recycle={false}
-      />
+		if (sessionId) {
+			handleCheckoutSuccess(sessionId);
+		} else {
+			setIsProcessing(false);
+			setError("Session id:tä ei löydy");
+		}
+	}, [clearCart]);
 
-      <div className="max-w-md w-full bg-white/90 backdrop-blur-md rounded-xl shadow-lg border border-pink-300 relative z-10">
-        <div className="p-6 sm:p-8">
-          <div className="flex justify-center">
-            <CheckCircle className="text-emerald-400 w-16 h-16 mb-4" />
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-center text-rose-800 mb-2">
-            Tilauksesi onnistui!
-          </h1>
+	if (isProcessing) {
+		return (
+			<div className="min-h-screen bg-background flex items-center justify-center">
+				<p className="text-secondary">
+					Käsitellään tilausta...
+				</p>
+			</div>
+		);
+	}
 
-          <p className="text-gray-700 text-center mb-2">
-            Kiitos ostoksestasi. Me käsittelemme sen nyt.
-          </p>
-          <p className="text-rose-700 text-center text-sm mb-6">
-            Katso sähköpostista tilausvahvistus ja tilauksen tiedot.
-          </p>
+	if (error) {
+		return (
+			<div className="min-h-screen bg-background flex items-center justify-center px-6">
+				<div className="text-center">
+					<p className="text-danger mb-4">
+						Virhe: {error}
+					</p>
 
-          <div className="bg-pink-50 rounded-lg p-4 mb-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-rose-700">Tilausnumero</span>
-              <span className="text-sm font-semibold text-rose-800">#12345</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-rose-700">Arvioitu saapumisaika</span>
-              <span className="text-sm font-semibold text-rose-800">3-5 päivää</span>
-            </div>
-          </div>
+					<Link
+						to="/"
+						className="text-primary hover:text-accent-hover transition-colors"
+					>
+						Takaisin kauppaan
+					</Link>
+				</div>
+			</div>
+		);
+	}
 
-          <div className="space-y-4">
-            <button
-              className="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-2 px-4 rounded-lg transition duration-300 flex items-center justify-center"
-            >
-              <HandHeart className="mr-2" size={18} />
-              Kiitos kun teit ostoksia pienyrittäjältä
-            </button>
+	return (
+		<div className="relative min-h-screen bg-background overflow-hidden">
 
-            <Link
-              to={"/"}
-              className="w-full bg-pink-200 hover:bg-pink-300 text-rose-800 font-bold py-2 px-4 rounded-lg transition duration-300 flex items-center justify-center"
-            >
-              Takaisin kauppaan
-              <ArrowRight className="ml-2" size={18} />
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+			{/* Background blur */}
+
+			<div className="absolute top-20 left-10 w-96 h-96 bg-accent/20 rounded-full blur-[120px]" />
+
+			<div className="absolute bottom-10 right-10 w-80 h-80 bg-ice/40 rounded-full blur-[120px]" />
+
+			{/* Hillitty konfetti */}
+
+			<Confetti
+				width={window.innerWidth}
+				height={window.innerHeight}
+				gravity={0.12}
+				numberOfPieces={140}
+				recycle={false}
+				tweenDuration={5000}
+				opacity={0.7}
+				style={{ zIndex: 5 }}
+			/>
+
+			<div className="relative z-10 min-h-screen flex items-center justify-center px-6 py-32">
+
+				<div className="w-full max-w-lg">
+
+					{/* Success card */}
+
+					<div
+						className="
+							rounded-[28px]
+							bg-surface
+							border
+							border-border
+							shadow-soft
+							p-8
+							sm:p-10
+							text-center
+						"
+					>
+
+						{/* Icon */}
+
+						<div className="
+							mx-auto
+							mb-6
+							flex
+							h-20
+							w-20
+							items-center
+							justify-center
+							rounded-full
+							bg-lavender/30
+						">
+							<CheckCircle
+								size={42}
+								className="text-success"
+							/>
+						</div>
+
+						{/* Heading */}
+
+						<p className="uppercase tracking-[0.35em] text-secondary text-xs mb-4">
+							Thank you for your order
+						</p>
+
+						<h1 className="font-heading text-4xl sm:text-5xl text-primary mb-5">
+							Tilauksesi onnistui!
+						</h1>
+
+						<p className="text-secondary leading-relaxed">
+							Kiitos ostoksestasi. Tilauksesi on vastaanotettu
+							ja käsittelemme sen nyt.
+						</p>
+
+						<p className="mt-3 text-sm text-secondary">
+							Tilausvahvistus ja tilauksen tiedot löytyvät
+							sähköpostistasi.
+						</p>
+
+						{/* Order information */}
+
+						<div className="
+							mt-8
+							rounded-2xl
+							bg-background
+							border
+							border-border
+							p-5
+							text-left
+						">
+
+							<div className="flex items-center justify-between gap-4 mb-4">
+								<span className="text-sm text-secondary">
+									Tilausnumero
+								</span>
+
+								<span className="text-sm font-medium text-primary">
+									#12345
+								</span>
+							</div>
+
+							<div className="flex items-center justify-between gap-4">
+								<span className="text-sm text-secondary">
+									Arvioitu saapumisaika
+								</span>
+
+								<span className="text-sm font-medium text-primary">
+									3–5 päivää
+								</span>
+							</div>
+
+						</div>
+
+						{/* Actions */}
+
+						<div className="mt-8 space-y-3">
+
+							<div className="
+								flex
+								items-center
+								justify-center
+								gap-2
+								rounded-2xl
+								bg-lavender/15
+								border
+								border-border
+								px-5
+								py-3.5
+								text-sm
+								text-primary
+							">
+								<HandHeart size={18} />
+								<span>
+									Kiitos kun teit ostoksia pienyrittäjältä
+								</span>
+							</div>
+
+							<Link
+								to="/"
+								className="
+									w-full
+									rounded-2xl
+									bg-primary
+									text-white
+									py-3.5
+									font-body
+									font-medium
+									flex
+									items-center
+									justify-center
+									gap-2
+									transition-all
+									duration-300
+									hover:bg-accent-hover
+									hover:shadow-lg
+									hover:-translate-y-0.5
+								"
+							>
+								Takaisin kauppaan
+								<ArrowRight size={18} />
+							</Link>
+
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+	);
 };
 
 export default PurchaseSuccessPage;

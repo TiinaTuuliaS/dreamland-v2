@@ -14,7 +14,10 @@ const PeopleAlsoBought = () => {
 				const res = await axios.get("/products/recommendations");
 				setRecommendations(res.data);
 			} catch (error) {
-				toast.error(error.response?.data?.message || "Virhe suosituksia haettaessa");
+				toast.error(
+					error.response?.data?.message ||
+						"Virhe suosituksia haettaessa"
+				);
 			} finally {
 				setIsLoading(false);
 			}
@@ -26,13 +29,49 @@ const PeopleAlsoBought = () => {
 	if (isLoading) return <LoadingSpinner />;
 
 	return (
-		<div className='mt-12 px-4'>
-			<h3 className='text-3xl font-semibold text-rose-800 mb-4'>Muut ostivat myös</h3>
-			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+		<div className="mt-12">
+
+			{/* Heading */}
+
+			<div className="mb-6">
+				<p
+					className="
+						mb-2
+						text-[10px]
+						uppercase
+						tracking-[0.3em]
+						text-secondary
+					"
+				>
+					You might also like
+				</p>
+
+				<h3 className="
+					font-heading
+					text-3xl
+					text-primary
+				">
+					Muut ostivat myös
+				</h3>
+			</div>
+
+			{/* Recommendations */}
+
+			<div className="
+				grid
+				grid-cols-1
+				sm:grid-cols-2
+				lg:grid-cols-3
+				gap-6
+			">
 				{recommendations.map((product) => (
-					<ProductCard key={product._id} product={product} />
+					<ProductCard
+						key={product._id}
+						product={product}
+					/>
 				))}
 			</div>
+
 		</div>
 	);
 };

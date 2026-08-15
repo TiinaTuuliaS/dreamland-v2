@@ -14,46 +14,107 @@ const tabs = [
 
 const AdminPage = () => {
 	const [activeTab, setActiveTab] = useState("create");
-	const {fetchAllProducts} = useProductStore();
+	const { fetchAllProducts } = useProductStore();
 
-	
 	useEffect(() => {
-		fetchAllProducts()
+		fetchAllProducts();
 	}, [fetchAllProducts]);
 
-
 	return (
-		<div className='min-h-screen relative overflow-hidden bg-pink-100 bg-opacity-40'>
-			<div className='relative z-10 container mx-auto px-4 py-16'>
-				<motion.h1
-					className='text-4xl font-bold mb-8 text-rose-800 text-center'
+		<div className="relative min-h-screen bg-background overflow-hidden text-primary">
+
+			{/* Background blur */}
+
+			<div className="absolute top-24 left-10 w-96 h-96 bg-accent/20 rounded-full blur-[120px]" />
+
+			<div className="absolute bottom-10 right-10 w-80 h-80 bg-ice/40 rounded-full blur-[120px]" />
+
+			<div className="relative z-10 max-w-content mx-auto px-6 lg:px-8 pt-32 pb-24">
+
+				{/* Heading */}
+
+				<motion.div
 					initial={{ opacity: 0, y: -20 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.8 }}
+					transition={{ duration: 0.6 }}
+					className="text-center mb-12"
 				>
-					Admin-hallintapaneeli
-				</motion.h1>
+					<p className="uppercase tracking-[0.35em] text-secondary text-xs mb-4">
+						Dreamland Studio
+					</p>
 
-				<div className='flex justify-center mb-8'>
-					{tabs.map((tab) => (
-						<button
-							key={tab.id}
-							onClick={() => setActiveTab(tab.id)}
-							className={`flex items-center px-4 py-2 mx-2 rounded-md font-medium transition-colors duration-200 ${
-								activeTab === tab.id
-									? "bg-rose-600 text-white"
-									: "bg-white text-rose-700 hover:bg-pink-200 border border-pink-300"
-							}`}
-						>
-							<tab.icon className='mr-2 h-5 w-5' />
-							{tab.label}
-						</button>
-					))}
-				</div>
+					<h1 className="font-heading text-5xl lg:text-6xl text-primary">
+						Admin-hallintapaneeli
+					</h1>
 
-				{activeTab === "create" && <CreateProductForm />}
-				{activeTab === "products" && <ProductsList />}
-				{activeTab === "analytics" && <AnalyticsTab />}
+					<p className="mt-4 text-secondary">
+						Hallitse tuotteita, sisältöä ja verkkokaupan analytiikkaa.
+					</p>
+				</motion.div>
+
+				{/* Tabs */}
+
+				<motion.div
+					initial={{ opacity: 0, y: 10 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.5, delay: 0.15 }}
+					className="
+						flex
+						flex-wrap
+						justify-center
+						gap-3
+						mb-10
+					"
+				>
+					{tabs.map((tab) => {
+						const Icon = tab.icon;
+						const isActive = activeTab === tab.id;
+
+						return (
+							<button
+								key={tab.id}
+								onClick={() => setActiveTab(tab.id)}
+								className={`
+									inline-flex
+									items-center
+									gap-2
+									rounded-full
+									border
+									px-5
+									py-3
+									text-sm
+									font-medium
+									transition-all
+									duration-300
+									${
+										isActive
+											? "bg-primary text-white border-primary shadow-soft"
+											: "bg-surface text-secondary border-border hover:bg-accent hover:text-white hover:border-accent"
+									}
+								`}
+							>
+								<Icon size={18} />
+								{tab.label}
+							</button>
+						);
+					})}
+				</motion.div>
+
+				{/* Active content */}
+
+				<motion.div
+					key={activeTab}
+					initial={{ opacity: 0, y: 10 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.35 }}
+				>
+					{activeTab === "create" && <CreateProductForm />}
+
+					{activeTab === "products" && <ProductsList />}
+
+					{activeTab === "analytics" && <AnalyticsTab />}
+				</motion.div>
+
 			</div>
 		</div>
 	);

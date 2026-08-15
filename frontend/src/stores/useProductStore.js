@@ -2,113 +2,194 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 import axios from "../lib/axios";
 
-//Frontin ja apin "välittäjät" note to self
+// Frontin ja apin "välittäjät"
 
 export const useProductStore = create((set) => ({
-    products: [],
-    featuredProducts: [],   // <-- oma tila suosikeille
-    loading: false,
-    error: null,
+	products: [],
+	featuredProducts: [],
+	loading: false,
+	error: null,
 
-    setProducts: (products) => set({ products }),
+	setProducts: (products) => set({ products }),
 
-    createProduct: async (productData) => {
-        set({ loading: true });
-        try {
-            const res = await axios.post("/products", productData);
-            set((prevState) => ({
-                products: [...prevState.products, res.data],
-                loading: false,
-            }));
-        } catch (error) {
-            set({ loading: false });
-            toast.error(error.response?.data?.message || "Virhe tuotteen luomisessa");
-        }
-    },
+	// Luo uusi tuote
+	createProduct: async (productData) => {
+		set({ loading: true });
 
-    fetchAllProducts: async () => {
-        set({ loading: true });
-        try {
-            const response = await axios.get("/products");
-            set({ products: response.data.products, loading: false });
-        } catch (error) {
-            set({ error: "Failed to fetch products", loading: false });
-            toast.error(error.response?.data?.error || "Failed to fetch products");
-        }
-    },
+		try {
+			const res = await axios.post("/products", productData);
 
-    fetchProductsByCategory: async (category) => {
-        set({ loading: true });
-        try {
-            const response = await axios.get(`/products/category/${category}`);
-            set({ products: response.data.products, loading: false });
-        } catch (error) {
-            set({ error: "Failed to fetch products", loading: false });
-            toast.error(error.response?.data?.error || "Failed to fetch products");
-        }
-    },
+			set((prevState) => ({
+				products: [...prevState.products, res.data],
+				loading: false,
+			}));
+		} catch (error) {
+			set({ loading: false });
 
-    deleteProduct: async (productId) => {
-        set({ loading: true });
-        try {
-            await axios.delete(`/products/${productId}`);
-            set((prevState) => ({
-                products: prevState.products.filter(
-                    (product) => product._id !== productId
-                ),
-                loading: false,
-            }));
-        } catch (error) {
-            set({ loading: false });
-            toast.error(error.response?.data?.error || "Virhe tuotteen poistamisessa");
-        }
-    },
+			toast.error(
+				error.response?.data?.message ||
+					"Virhe tuotteen luomisessa"
+			);
+		}
+	},
 
-    toggleFeaturedProduct: async (productId) => {
-        set({ loading: true });
-        try {
-            const response = await axios.patch(`/products/${productId}`);
-            set((prevState) => ({
-                products: prevState.products.map((product) =>
-                    product._id === productId
-                        ? { ...product, isFeatured: response.data.isFeatured }
-                        : product
-                ),
-                loading: false,
-            }));
-        } catch (error) {
-            set({ loading: false });
-            toast.error(error.response?.data?.error || "Virhe featured toiminnossa");
-        }
-    },
+	// Hae kaikki tuotteet
+	fetchAllProducts: async () => {
+		set({ loading: true });
 
-    fetchFeaturedProducts: async () => {
-        set({ loading: true });
-        try {
-            const response = await axios.get("/products/featured");
-            // Tallennetaan erilliseen tilaan
-            set({ featuredProducts: response.data, loading: false });
-        } catch (error) {
-            set({ error: "Tuotteita ei voitu hakea", loading: false });
-            console.log("Error featured tuotteita ei voitu hakea:", error);
-        }
-    },
+		try {
+			const response = await axios.get("/products");
+
+			set({
+				products: response.data.products,
+				loading: false,
+			});
+		} catch (error) {
+			set({
+				error: "Failed to fetch products",
+				loading: false,
+			});
+
+			toast.error(
+				error.response?.data?.error ||
+					"Failed to fetch products"
+			);
+		}
+	},
+
+	// Hae kategorian tuotteet
+	fetchProductsByCategory: async (category) => {
+		set({ loading: true });
+
+		try {
+			const response = await axios.get(
+				`/products/category/${category}`
+			);
+
+			set({
+				products: response.data.products,
+				loading: false,
+			});
+		} catch (error) {
+			set({
+				error: "Failed to fetch products",
+				loading: false,
+			});
+
+			toast.error(
+				error.response?.data?.error ||
+					"Failed to fetch products"
+			);
+		}
+	},
+
+	// Muokkaa tuotetta
+	updateProduct: async (productId, updatedData) => {
+		set({ loading: true });
+
+		try {
+			const response = await axios.put(
+				`/products/${productId}`,
+				updatedData
+			);
+
+			set((prevState) => ({
+				products: prevState.products.map((product) =>
+					product._id === productId
+						? response.data
+						: product
+				),
+				loading: false,
+			}));
+
+			toast.success("Tuote päivitetty!");
+		} catch (error) {
+			set({ loading: false });
+
+			toast.error(
+				error.response?.data?.message ||
+					"Virhe tuotteen päivittämisessä"
+			);
+		}
+	},
+
+	// Poista tuote
+	deleteProduct: async (productId) => {
+		set({ loading: true });
+
+		try {
+			await axios.delete(`/products/${productId}`);
+
+			set((prevState) => ({
+				products: prevState.products.filter(
+					(product) => product._id !== productId
+				),
+				loading: false,
+			}));
+		} catch (error) {
+			set({ loading: false });
+
+			toast.error(
+				error.response?.data?.error ||
+					"Virhe tuotteen poistamisessa"
+			);
+		}
+	},
+
+	// Featured päälle / pois
+	toggleFeaturedProduct: async (productId) => {
+		set({ loading: true });
+
+		try {
+			const response = await axios.patch(
+				`/products/${productId}`
+			);
+
+			set((prevState) => ({
+				products: prevState.products.map((product) =>
+					product._id === productId
+						? {
+								...product,
+								isFeatured:
+									response.data.isFeatured,
+							}
+						: product
+				),
+				loading: false,
+			}));
+		} catch (error) {
+			set({ loading: false });
+
+			toast.error(
+				error.response?.data?.error ||
+					"Virhe featured toiminnossa"
+			);
+		}
+	},
+
+	// Hae featured-tuotteet
+	fetchFeaturedProducts: async () => {
+		set({ loading: true });
+
+		try {
+			const response = await axios.get(
+				"/products/featured"
+			);
+
+			set({
+				featuredProducts: response.data,
+				loading: false,
+			});
+		} catch (error) {
+			set({
+				error: "Tuotteita ei voitu hakea",
+				loading: false,
+			});
+
+			console.log(
+				"Error featured tuotteita ei voitu hakea:",
+				error
+			);
+		}
+	},
 }));
-
-
-//tuotteen muokkaus - jatkokehitysidea luodaan useproductstore olion sisälle metodina, päivitykset myös ProductList komponenttiin
-//UpdateProduct: async (id, updatedData) => {
-/*   try {
-    const res = await fetch(`/api/products/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedData),
-    });
-    const data = await res.json();
-    set((state) => ({
-      products: state.products.map((p) => (p._id === id ? data : p)),
-    }));
-  } catch (error) {
-    console.error("Update failed", error);
-  }
-},** */

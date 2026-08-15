@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useCartStore } from "../stores/useCartStore";
 import { motion } from "framer-motion";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, ArrowLeft } from "lucide-react";
 import CartItem from "../components/CartItem";
 import PeopleAlsoBought from "../components/PeopleAlsoBought";
 import OrderSummary from "../components/OrderSummary";
@@ -11,70 +11,181 @@ const CartPage = () => {
 	const { cart } = useCartStore();
 
 	return (
-		<div className="py-8 md:py-16">
-			<div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
-				<div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
-					<motion.div
-						className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl"
-						initial={{ opacity: 0, x: -20 }}
-						animate={{ opacity: 1, x: 0 }}
-						transition={{ duration: 0.5, delay: 0.2 }}
-					>
-						{cart.length === 0 ? (
-							<EmptyCartUI />
-						) : (
-							<div className="space-y-6">
-								{cart.map((item) => (
-									<CartItem key={item._id} item={item} />
-								))}
-							</div>
-						)}
-						{cart.length > 0 && <PeopleAlsoBought />}
-					</motion.div>
+		<div className="relative min-h-screen bg-background text-primary overflow-hidden">
+
+			{/* Background blur */}
+
+			<div className="absolute top-24 left-10 w-96 h-96 bg-accent/20 rounded-full blur-[120px]" />
+
+			<div className="absolute bottom-10 right-10 w-80 h-80 bg-ice/40 rounded-full blur-[120px]" />
+
+			<div className="relative z-10 max-w-content mx-auto px-6 lg:px-8 pt-32 pb-24">
+
+				{/* Back to Home */}
+
+				<Link
+					to="/"
+					className="
+						inline-flex
+						items-center
+						gap-2
+						rounded-full
+						bg-surface
+						border
+						border-border
+						shadow-soft
+						px-5
+						py-3
+						text-secondary
+						transition-all
+						duration-300
+						hover:bg-accent
+						hover:text-white
+						mb-12
+					"
+				>
+					<ArrowLeft size={18} />
+					Back to Home
+				</Link>
+
+				{/* Heading */}
+
+				<motion.div
+					initial={{ opacity: 0, y: -20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.6 }}
+					className="text-center mb-12"
+				>
+					<p className="uppercase tracking-[0.35em] text-secondary text-xs mb-4">
+						Your selections
+					</p>
+
+					<h1 className="font-heading text-5xl lg:text-6xl text-primary">
+						Ostoskori
+					</h1>
 
 					{cart.length > 0 && (
+						<p className="mt-4 text-secondary">
+							{cart.length}{" "}
+							{cart.length === 1 ? "tuote" : "tuotetta"} ostoskorissasi
+						</p>
+					)}
+				</motion.div>
+
+				{cart.length === 0 ? (
+					<EmptyCartUI />
+				) : (
+					<div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px] gap-8 items-start">
+
+						{/* Cart items */}
+
 						<motion.div
-							className="mx-auto mt-6 max-w-4xl flex-1 space-y-6 lg:mt-0 lg:w-full"
+							initial={{ opacity: 0, x: -20 }}
+							animate={{ opacity: 1, x: 0 }}
+							transition={{ duration: 0.5, delay: 0.15 }}
+							className="space-y-8"
+						>
+							<div className="space-y-6">
+								{cart.map((item) => (
+									<CartItem
+										key={item._id}
+										item={item}
+									/>
+								))}
+							</div>
+
+							<PeopleAlsoBought />
+						</motion.div>
+
+						{/* Order summary */}
+
+						<motion.div
 							initial={{ opacity: 0, x: 20 }}
 							animate={{ opacity: 1, x: 0 }}
-							transition={{ duration: 0.5, delay: 0.4 }}
+							transition={{ duration: 0.5, delay: 0.25 }}
+							className="space-y-6 lg:sticky lg:top-28"
 						>
 							<OrderSummary />
 							<GiftCouponCard />
 						</motion.div>
-					)}
-				</div>
+
+					</div>
+				)}
+
 			</div>
 		</div>
 	);
 };
+
 export default CartPage;
 
 
-//tyhjä ostoskori - sivu
+// Empty cart
+
 const EmptyCartUI = () => (
 	<motion.div
-		className="flex items-center justify-center py-16 px-4"
 		initial={{ opacity: 0, y: 20 }}
 		animate={{ opacity: 1, y: 0 }}
 		transition={{ duration: 0.5 }}
+		className="flex justify-center py-10"
 	>
-		<div className="max-w-md w-full bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-pink-200 p-8 text-center space-y-6">
-			<ShoppingCart className="h-24 w-24 text-pink-500 mx-auto drop-shadow-md" />
+		<div
+			className="
+				w-full
+				max-w-lg
+				rounded-[28px]
+				bg-surface
+				border
+				border-border
+				shadow-soft
+				p-10
+				md:p-14
+				text-center
+			"
+		>
+			<div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-lavender/30">
+				<ShoppingCart
+					size={42}
+					className="text-primary"
+				/>
+			</div>
 
-			<h3 className="text-3xl font-bold text-rose-900 drop-shadow-sm">
-				Ostokorisi on tyhjä
-			</h3>
+			<p className="uppercase tracking-[0.3em] text-secondary text-xs mb-4">
+				Your Dreamland bag
+			</p>
 
-			<p className="text-gray-700">
-				Näyttää siltä, että et ole lisännyt vielä mitään koriin.
+			<h2 className="font-heading text-4xl text-primary mb-4">
+				Ostoskorisi on tyhjä
+			</h2>
+
+			<p className="text-secondary leading-relaxed max-w-sm mx-auto mb-8">
+				Näyttää siltä, että et ole vielä löytänyt täydellistä
+				tuotetta. Tutustu kokoelmaamme ja löydä oma suosikkisi.
 			</p>
 
 			<Link
-				className="inline-block w-full rounded-lg bg-pink-600 px-6 py-3 text-white font-semibold shadow-md transition hover:bg-pink-500 hover:shadow-lg"
 				to="/"
+				className="
+					inline-flex
+					w-full
+					items-center
+					justify-center
+					gap-2
+					rounded-2xl
+					bg-primary
+					text-white
+					py-3.5
+					font-body
+					font-medium
+					transition-all
+					duration-300
+					hover:bg-accent-hover
+					hover:-translate-y-0.5
+					hover:shadow-lg
+				"
 			>
-				🚀 Aloita shoppailu
+				<ArrowLeft size={18} />
+				Jatka ostoksia
 			</Link>
 		</div>
 	</motion.div>
