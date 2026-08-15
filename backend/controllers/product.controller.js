@@ -14,6 +14,31 @@ export const getAllProducts = async (req, res) => {
     }
 };    
 
+// Hakee yhden tuotteen ID:n perusteella
+export const getProductById = async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+
+        if (!product) {
+            return res.status(404).json({
+                message: "Tuotetta ei löytynyt",
+            });
+        }
+
+        res.json(product);
+    } catch (error) {
+        console.log(
+            "Virhe yksittäisen tuotteen haussa:",
+            error.message
+        );
+
+        res.status(500).json({
+            message: "Serveri ei vastaa",
+            error: error.message,
+        });
+    }
+};
+
 //Funktio hakee featured tuotteet redis cashesta
 
 export const getFeaturedProducts = async (req, res) => {

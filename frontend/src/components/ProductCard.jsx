@@ -1,15 +1,13 @@
-import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { ShoppingCart, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ShoppingCart } from "lucide-react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { useUserStore } from "../stores/useUserStore";
 import { useCartStore } from "../stores/useCartStore";
 
 const ProductCard = ({ product }) => {
 	const { user } = useUserStore();
 	const { addToCart } = useCartStore();
-
-	const [isOpen, setIsOpen] = useState(false);
 
 	const handleAddToCart = () => {
 		if (!user) {
@@ -23,214 +21,211 @@ const ProductCard = ({ product }) => {
 		toast.success("Tuote lisätty ostoskoriin!");
 	};
 
-	useEffect(() => {
-		const handleKeyDown = (e) => {
-			if (e.key === "Escape") setIsOpen(false);
-		};
-
-		if (isOpen) {
-			document.body.style.overflow = "hidden";
-			window.addEventListener("keydown", handleKeyDown);
-		} else {
-			document.body.style.overflow = "auto";
-		}
-
-		return () => {
-			document.body.style.overflow = "auto";
-			window.removeEventListener("keydown", handleKeyDown);
-		};
-	}, [isOpen]);
-
 	return (
-		<>
-			<motion.div
-				layout
-				whileHover={{ y: -8 }}
-				transition={{ duration: 0.25 }}
+		<motion.div
+			layout
+			whileHover={{ y: -8 }}
+			transition={{ duration: 0.25 }}
+			className="
+				group
+				flex
+				h-full
+				flex-col
+				overflow-hidden
+				rounded-[28px]
+				border
+				border-border
+				bg-surface
+				shadow-soft
+				transition-shadow
+				duration-300
+				hover:shadow-xl
+			"
+		>
+
+			{/* Product Image */}
+
+			<Link
+				to={`/product/${product._id}`}
 				className="
-					group
+					relative
 					flex
-					flex-col
-					h-full
+					aspect-square
+					cursor-pointer
+					items-center
+					justify-center
 					overflow-hidden
-					rounded-[28px]
-					bg-surface
-					border
-					border-border
-					shadow-soft
-					transition-shadow
-					duration-300
-					hover:shadow-xl
+					bg-lavender/20
 				"
 			>
-				{/* Product Image */}
+				<img
+					src={product.image}
+					alt={product.name}
+					className="
+						h-full
+						w-full
+						object-contain
+						p-6
+						transition-all
+						duration-500
+						group-hover:scale-105
+						group-hover:rotate-1
+					"
+				/>
 
 				<div
-					onClick={() => setIsOpen(true)}
 					className="
-						relative
-						aspect-square
-						cursor-pointer
-						overflow-hidden
-						bg-lavender/20
-						flex
-						items-center
-						justify-center
+						pointer-events-none
+						absolute
+						inset-0
+						bg-gradient-to-t
+						from-black/5
+						to-transparent
+						opacity-0
+						transition-opacity
+						duration-500
+						group-hover:opacity-100
+					"
+				/>
+
+				{/* View details hint */}
+
+				<div
+					className="
+						pointer-events-none
+						absolute
+						bottom-4
+						left-1/2
+						-translate-x-1/2
+						rounded-full
+						bg-surface/90
+						px-4
+						py-2
+						text-xs
+						font-medium
+						text-primary
+						opacity-0
+						shadow-soft
+						backdrop-blur-sm
+						transition-all
+						duration-300
+						group-hover:opacity-100
 					"
 				>
-					<img
-						src={product.image}
-						alt={product.name}
-						className="
-							w-full
-							h-full
-							object-contain
-							p-6
-							transition-all
-							duration-500
-							group-hover:scale-105
-							group-hover:rotate-1
-						"
-					/>
-
-					<div
-						className="
-							absolute
-							inset-0
-							bg-gradient-to-t
-							from-black/5
-							to-transparent
-							opacity-0
-							group-hover:opacity-100
-							transition-opacity
-							duration-500
-						"
-					/>
+					Katso tuotetta
 				</div>
+			</Link>
 
-				{/* Product Content */}
 
-				<div className="flex flex-1 flex-col p-6">
+			{/* Product Content */}
 
-					<h3 className="font-heading text-2xl text-primary">
-						{product.name}
-					</h3>
+			<div className="flex flex-1 flex-col p-6">
 
-					<p className="mt-3 text-sm leading-relaxed text-secondary flex-1">
-						{product.description}
+				{/* Product name */}
+
+				<Link
+					to={`/product/${product._id}`}
+					className="
+						font-heading
+						text-2xl
+						text-primary
+						transition-colors
+						duration-300
+						hover:text-accent-hover
+					"
+				>
+					{product.name}
+				</Link>
+
+
+				{/* Description */}
+
+				<p
+					className="
+						mt-3
+						flex-1
+						text-sm
+						leading-relaxed
+						text-secondary
+					"
+				>
+					{product.description}
+				</p>
+
+
+				<div className="mt-6">
+
+					{/* Price */}
+
+					<p
+						className="
+							mb-6
+							font-heading
+							text-3xl
+							text-primary
+						"
+					>
+						€ {Number(product.price).toFixed(2)}
 					</p>
 
-					<div className="mt-6">
 
-						<p className="font-heading text-3xl text-primary mb-6">
-							€ {product.price.toFixed(2)}
-						</p>
+					{/* Product details */}
 
-						<button
-							onClick={handleAddToCart}
-							className="
-								w-full
-								rounded-2xl
-								bg-primary
-								text-white
-								py-3.5
-								font-body
-								font-medium
-								flex
-								items-center
-								justify-center
-								gap-2
-								transition-all
-								duration-300
-								hover:bg-accent-hover
-								hover:-translate-y-0.5
-								hover:shadow-lg
-								active:scale-[0.98]
-							"
-						>
-							<ShoppingCart size={18} />
-							Add to Cart
-						</button>
-
-					</div>
-
-				</div>
-
-			</motion.div>
-
-						<AnimatePresence>
-				{isOpen && (
-					<motion.div
+					<Link
+						to={`/product/${product._id}`}
 						className="
-							fixed
-							inset-0
-							z-50
+							mb-4
 							flex
 							items-center
 							justify-center
-							bg-black/70
-							backdrop-blur-md
-							p-6
+							text-sm
+							font-medium
+							text-secondary
+							transition-colors
+							duration-300
+							hover:text-primary
 						"
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						transition={{ duration: 0.2 }}
-						onClick={() => setIsOpen(false)}
 					>
-						<motion.div
-							className="relative"
-							initial={{ opacity: 0, scale: 0.92 }}
-							animate={{ opacity: 1, scale: 1 }}
-							exit={{ opacity: 0, scale: 0.92 }}
-							transition={{
-								duration: 0.25,
-								ease: "easeOut",
-							}}
-							onClick={(e) => e.stopPropagation()}
-						>
-							<img
-								src={product.image}
-								alt={product.name}
-								className="
-									max-w-[90vw]
-									max-h-[90vh]
-									object-contain
-									drop-shadow-2xl
-								"
-							/>
+						Katso tuotteen tiedot
+						<span className="ml-1 transition-transform duration-300 group-hover:translate-x-1">
+							→
+						</span>
+					</Link>
 
-							<button
-								onClick={() => setIsOpen(false)}
-								className="
-									absolute
-									-top-4
-									-right-4
-									w-11
-									h-11
-									rounded-full
-									bg-surface
-									border
-									border-border
-									shadow-soft
-									flex
-									items-center
-									justify-center
-									text-primary
-									transition-all
-									duration-300
-									hover:bg-accent
-									hover:text-white
-									hover:rotate-90
-								"
-							>
-								<X size={20} />
-							</button>
-						</motion.div>
-					</motion.div>
-				)}
-			</AnimatePresence>
-		</>
+
+					{/* Add to cart */}
+
+					<button
+						onClick={handleAddToCart}
+						className="
+							flex
+							w-full
+							items-center
+							justify-center
+							gap-2
+							rounded-2xl
+							bg-primary
+							py-3.5
+							font-body
+							font-medium
+							text-white
+							transition-all
+							duration-300
+							hover:-translate-y-0.5
+							hover:bg-accent-hover
+							hover:shadow-lg
+							active:scale-[0.98]
+						"
+					>
+						<ShoppingCart size={18} />
+						Lisää ostoskoriin
+					</button>
+
+				</div>
+
+			</div>
+
+		</motion.div>
 	);
 };
 

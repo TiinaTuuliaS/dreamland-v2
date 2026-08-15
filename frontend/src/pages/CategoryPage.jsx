@@ -28,110 +28,214 @@ const CategoryPage = () => {
 		category.charAt(0).toUpperCase() + category.slice(1);
 
 	return (
-		<div className="relative min-h-screen bg-background overflow-hidden">
+		<div className="relative min-h-screen overflow-hidden bg-background">
 
 			{/* Background blur */}
 
-			<div className="absolute top-24 left-20 w-96 h-96 bg-accent/20 rounded-full blur-[120px]" />
+			<div
+				className="
+					pointer-events-none
+					absolute
+					left-20
+					top-24
+					h-96
+					w-96
+					rounded-full
+					bg-accent/20
+					blur-[120px]
+				"
+			/>
 
-			<div className="absolute bottom-0 right-10 w-80 h-80 bg-ice/40 rounded-full blur-[120px]" />
+			<div
+				className="
+					pointer-events-none
+					absolute
+					bottom-0
+					right-10
+					h-80
+					w-80
+					rounded-full
+					bg-ice/40
+					blur-[120px]
+				"
+			/>
 
-			<div className="relative z-10 max-w-content mx-auto px-6 lg:px-8 pt-5 pb-24">
+			<div
+				className="
+					relative
+					z-10
+					mx-auto
+					max-w-content
+					px-6
+					pb-24
+					pt-28
+					lg:px-8
+					lg:pt-32
+				"
+			>
 
 				{/* Back button */}
 
-				<button
-					onClick={() => navigate("/")}
+				<motion.button
+					onClick={() => navigate(-1)}
+					initial={{
+						opacity: 0,
+						x: -15,
+					}}
+					animate={{
+						opacity: 1,
+						x: 0,
+					}}
+					transition={{
+						duration: 0.5,
+					}}
 					className="
+						mb-10
 						inline-flex
 						items-center
 						gap-2
 						rounded-full
-						bg-surface
 						border
 						border-border
-						shadow-soft
+						bg-surface
 						px-5
 						py-3
-						text-secondary
+						text-sm
+						font-medium
+						text-primary
+						shadow-soft
 						transition-all
 						duration-300
+						hover:-translate-y-0.5
+						hover:border-accent
 						hover:bg-accent
 						hover:text-white
-						mb-8
 					"
 				>
-					<ArrowLeft size={18} />
-					Back to Home
-				</button>
+					<ArrowLeft size={17} />
+					Takaisin
+				</motion.button>
 
 				{/* Heading */}
 
 				<motion.div
-					initial={{ opacity: 0, y: -20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.6 }}
-					className="text-center mb-10"
+					initial={{
+						opacity: 0,
+						y: -20,
+					}}
+					animate={{
+						opacity: 1,
+						y: 0,
+					}}
+					transition={{
+						duration: 0.6,
+					}}
+					className="mb-10 text-center"
 				>
-
-					<p className="uppercase tracking-[0.35em] text-secondary text-xs mb-4">
+					<p
+						className="
+							mb-4
+							text-xs
+							uppercase
+							tracking-[0.35em]
+							text-secondary
+						"
+					>
 						Discover our collection
 					</p>
 
-					<h1 className="font-heading text-5xl lg:text-6xl text-primary mb-5">
+					<h1
+						className="
+							mb-5
+							font-heading
+							text-5xl
+							text-primary
+							lg:text-6xl
+						"
+					>
 						{title}
 					</h1>
 
-					<p className="max-w-xl mx-auto text-secondary leading-relaxed">
+					<p
+						className="
+							mx-auto
+							max-w-xl
+							leading-relaxed
+							text-secondary
+						"
+					>
 						{categoryDescriptions[category]}
 					</p>
-
 				</motion.div>
 
 				{/* Products */}
 
-<motion.div
-	initial={{ opacity: 0, y: 20 }}
-	animate={{ opacity: 1, y: 0 }}
-	transition={{ duration: 0.6, delay: 0.2 }}
-	className="
-		grid
-		grid-cols-1
-		sm:grid-cols-2
-		lg:grid-cols-3
-		xl:grid-cols-4
-		gap-8
-	"
->
-	{products?.length === 0 ? (
-		<div className="col-span-full py-24 text-center">
+				<motion.div
+					initial={{
+						opacity: 0,
+						y: 20,
+					}}
+					animate={{
+						opacity: 1,
+						y: 0,
+					}}
+					transition={{
+						duration: 0.6,
+						delay: 0.2,
+					}}
+					className="
+						grid
+						grid-cols-1
+						gap-8
+						sm:grid-cols-2
+						lg:grid-cols-3
+						xl:grid-cols-4
+					"
+				>
+					{products?.length === 0 ? (
+						<div className="col-span-full py-24 text-center">
 
-			<h2 className="font-heading text-4xl text-primary mb-4">
-				Coming Soon
-			</h2>
+							<h2
+								className="
+									mb-4
+									font-heading
+									text-4xl
+									text-primary
+								"
+							>
+								Coming Soon
+							</h2>
 
-			<p className="text-secondary">
-				We're adding beautiful new pieces to this collection.
-			</p>
+							<p className="text-secondary">
+								We're adding beautiful new pieces
+								to this collection.
+							</p>
 
-		</div>
-	) : (
-		products.map((product) => (
-			<motion.div
-				key={product._id}
-				layout
-				initial={{ opacity: 0, y: 20 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.35 }}
-			>
-				<ProductCard product={product} />
-			</motion.div>
-		))
-	)}
-</motion.div>
+						</div>
+					) : (
+						products.map((product) => (
+							<motion.div
+								key={product._id}
+								layout
+								initial={{
+									opacity: 0,
+									y: 20,
+								}}
+								animate={{
+									opacity: 1,
+									y: 0,
+								}}
+								transition={{
+									duration: 0.35,
+								}}
+							>
+								<ProductCard product={product} />
+							</motion.div>
+						))
+					)}
+				</motion.div>
 
 			</div>
-
 		</div>
 	);
 };
